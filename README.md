@@ -256,15 +256,20 @@ While `printf` writes to `stdout` by default, `fprintf` allows us to target any 
 ## 3) Questions
 
 1. What is the difference between `printf` and `fprintf`, and why might you use one over the other?
+   printf is used to print to stdout, fprintf is used to open stream to file and write things in file.
 
-2. What are file descriptors `0`, `1`, and `2` in POSIX systems, and what streams do they correspond to?
+3. What are file descriptors `0`, `1`, and `2` in POSIX systems, and what streams do they correspond to?
+   0 = stdin (Input, Console.Readline()), 1 = stdout (Output, Console.Writelile()), 2 = stderr (Error output)
 
-3. How does the `write` system call work at the register level, and what values must be placed in which registers before calling `syscall`?
+5. How does the `write` system call work at the register level, and what values must be placed in which registers before calling `syscall`?
+   before we can use write Syscall we need to tell what we want to do $1 $rax, $1 $rdi (Filedescriptor 1 for Write), set pointer to puffer($rsi) and tell how long our message is ($rdx) after we cann call syscall write.
 
-4. What do the flags `O_WRONLY`, `O_CREAT`, and `O_TRUNC` mean, and how are they combined when opening a file?
+7. What do the flags `O_WRONLY`, `O_CREAT`, and `O_TRUNC` mean, and how are they combined when opening a file?
+   1.WriteOnly rights, 2. Creat rights, 3. Truncate rights (Change or delete rights), using this flags u can deside what is allowed to do with the file.
 
-5. How does `fprintf` internally relate to system calls like `write` — what layers exist between user code and the kernel?
-
+9. How does `fprintf` internally relate to system calls like `write` — what layers exist between user code and the kernel?
+First fprintf is formating my String and writing my string in FILE *stdout after "\n" or fflush(stdout) traveling my Input to the "write() Wrapper"  where glibc calls own version of write() and if all ready glibc calls Syscall which gives instruction to the Kernel. Kernel got own version of write(), sys_write() where Kernel verify
+fd, transporting user_data to kernel, verify output platform, if fd = 1 the data goes to TTY-drivers and we recive output on the Terminal.
 
 ## 4) Advice
 
